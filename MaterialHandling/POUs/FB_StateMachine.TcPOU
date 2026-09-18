@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_StateMachine" Id="{715a91ff-90c8-4085-9d8f-19faf26fd533}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_StateMachine
+
+VAR
+	fbModeManager: FB_ModeManager;
+	fbAutoState: FB_AutoState;
+	xEnable_Auto: BOOL;
+	xReset_Auto: BOOL;
+END_VAR
+VAR_INPUT
+	xEmitter_Manual: BOOL;
+	xEStop: BOOL;
+	xPB_ManualRun_Pressed: BOOL;
+	xSel_Auto: BOOL;
+    xSel_Manual: BOOL;
+END_VAR
+VAR_OUTPUT
+	eErrorType: E_ErrorHandling;
+	eMode: E_Mode;
+	
+	xEmitter: BOOL;
+	xConv_LoadStation: BOOL;
+	xCurvedConv_CCW: BOOL;
+	xConv_BeforeEntry: BOOL;
+	xMC_Start: BOOL;
+	xMC_Stop: BOOL;
+	xMC_Reset: BOOL;
+	xMC_ProduceLids: BOOL;
+	xConv_AfterProcess: BOOL;
+	xRemover: BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbModeManager(xEStop := xEStop, xSel_Auto:= xSel_Auto, xSel_Manual:= xSel_Manual);
+eMode := fbModeManager.eMode;
+eErrorType:= fbModeManager.eErrorType;
+
+IF eMode = Auto THEN
+	xEnable_Auto := TRUE;
+	xReset_Auto := FALSE;
+END_IF
+IF eMode = Idle OR eMode = Manual THEN
+		xEnable_Auto := FALSE;
+	    xReset_Auto := TRUE;
+END_IF
+	
+ CASE eMode OF
+	
+	Auto:
+	   
+	   fbAutoState(xEnable:=xEnable_Auto, xReset:=xReset_Auto);
+	   
+	   xEmitter := fbAutoState.xEmitter;
+       xConv_LoadStation := fbAutoState.xConv_LoadStation;
+	   xCurvedConv_CCW := fbAutoState.xCurvedConv_CCW;
+	   xConv_BeforeEntry := fbAutoState.xConv_BeforeEntry;
+	   xMC_Start := fbAutoState.xMC_Start;
+	   xMC_ProduceLids := fbAutoState.xMC_ProduceLids;
+	   xConv_AfterProcess := fbAutoState.xConv_AfterProcess;
+	   xRemover := fbAutoState.xRemover;
+	   
+	Manual:
+	   
+	   IF xPB_ManualRun_Pressed THEN
+		   xMC_Start := xPB_ManualRun_Pressed;  //Robot in the Scene is predefined to work only when the raw material detected from the cell-Sensor; IF operator released the PB during the Transfer, it supposed to finish the current job unless he pressed Stop
+           //xPb_ManualRun_Light:= TRUE;    don't forget
+		   xConv_LoadStation:= TRUE;
+		   xCurvedConv_CCW:= TRUE;
+		   xConv_BeforeEntry:= TRUE;
+		   xConv_AfterProcess:=TRUE;
+		   xEmitter := xEmitter_Manual;  //Operator should feed the Material manually obe by one (Later with HMI)
+		   xRemover:= TRUE;
+	   END_IF
+	   
+	   fbAutoState(xEnable:=xEnable_Auto, xReset:=xReset_Auto);
+	  	
+	 Idle:
+	    
+	    xConv_LoadStation:= FALSE;
+		xCurvedConv_CCW:= FALSE;
+		xConv_BeforeEntry:= FALSE;
+		xConv_AfterProcess:= FALSE;
+		xMC_Start:= FALSE;
+		xMC_Stop:= FALSE;
+		xEmitter:= FALSE;
+		xRemover:= FALSE;
+		xMC_Reset:= TRUE;
+		xMC_Reset:= FALSE; //Trigger once at the beginning
+		
+		fbAutoState(xEnable:=xEnable_Auto, xReset:=xReset_Auto);
+	  
+  END_CASE
+		
+
+
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

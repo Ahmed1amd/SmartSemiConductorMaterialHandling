@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_AutoState" Id="{8cd83f7a-6729-472d-a24b-1341a998fb8d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_AutoState
+
+VAR
+	eAutoState: E_AutoState := Create_Product;
+	//pPointer: POINTER TO E_MODE;
+END_VAR
+VAR_INPUT
+	xEnable: BOOL;
+	xReset: BOOL;
+END_VAR
+VAR_OUTPUT
+	xEmitter: BOOL;
+	xConv_LoadStation: BOOL;
+	xCurvedConv_CCW: BOOL;
+	xConv_BeforeEntry: BOOL;
+	xMC_Start: BOOL;
+	xMC_ProduceLids: BOOL;
+	xConv_AfterProcess: BOOL;
+	xRemover: BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF xReset THEN
+	IF IOs.xSystemReset THEN  //If Operator clicked reset=> Product on conveyor has been cleared ; If Not => system will continue running same product when back to Auto 
+     eAutoState:= Create_Product;
+    END_IF
+   ELSIF xEnable THEN	
+	
+CASE eAutoState OF
+
+(*10*) Create_Product:
+	
+	   xEmitter:= TRUE;
+	   IF IOs.xSensor_LoadStation THEN
+		  eAutoState := Load_Conveyor;
+	   END_IF
+	
+(*20*) Load_Conveyor: 
+	
+	   xEmitter := FALSE;
+	   xConv_LoadStation:= TRUE;
+	   IF NOT IOs.xSensor_LoadStation THEN
+		   eAutoState:= Transfer_To_MC;
+	   END_IF
+ 
+(*30*) Transfer_To_MC: 
+	
+	   xCurvedConv_CCW:= TRUE;
+	   xConv_BeforeEntry:= TRUE;
+	   IF IOs.xSensor_BeforeEntry THEN
+		   eAutoState:= Machine_Start;
+	   END_IF
+	   
+(*40*) Machine_Start: 
+
+       xConv_LoadStation:= FALSE;
+       xCurvedConv_CCW:= FALSE;
+       xMC_Start:= TRUE;
+       xMC_ProduceLids:= 0; //0 Produce base
+	   IF IOs.xMC_IsBusy THEN
+       eAutoState:= Wait_Machine_Busy;
+	   END_IF
+	   
+(*50*) Wait_Machine_Busy: 
+	 
+	    xConv_BeforeEntry:= FALSE;
+		IF (IOs.xrMC_Progress > 0) AND (IOs.xrMC_Progress < 100) THEN
+		eAutoState:= Wait_Machine_Complete;
+	    END_IF
+	 
+(*60*) Wait_Machine_Complete:  
+	   
+	   xMC_Start:= FALSE;
+	   IF NOT (IOs.xMC_IsBusy AND IOs.xMC_HasError) THEN  //It should get in this State after checking outside no errors, should be considered here again ??
+		   
+		   eAutoState:= Exit_MC;
+	   END_IF
+	   
+(*70*) Exit_MC:  
+	   
+	   xConv_AfterProcess:= TRUE;
+	   eAutoState:= Move_To_Unload;
+	   
+(*80*)  MOVE_To_Unload: 
+	 
+	   IF IOs.xSensor_AtExit THEN
+		   eAutoState:= Remove_Product;
+	   END_IF
+	   	 
+(*90*)  Remove_Product: 
+	 
+			xRemover:= TRUE;
+			eAutoState:= Complete;
+					
+(*100*) Complete:  
+	 
+		IF NOT IOs.xSensor_AtExit THEN
+			xConv_AfterProcess:= FALSE;
+			xRemover:= FALSE;
+			eAutoState:= Create_Product;
+		END_IF
+	 
+END_CASE
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

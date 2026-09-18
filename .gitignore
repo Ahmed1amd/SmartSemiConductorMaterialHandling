@@ -1,0 +1,8 @@
+# Visual Studio
+.vs/
+# TwinCAT
+_Boot/
+**/_CompileInfo/
+**/_Libraries/
+*.bak
+*.tclrs

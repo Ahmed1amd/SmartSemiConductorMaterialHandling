@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_ModeManager" Id="{3a909d5a-4d8d-4531-aacf-bcb8147f0a11}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ModeManager
+VAR_INPUT
+	xEStop: BOOL;
+	xSel_Auto: BOOL;
+	xSel_Manual: BOOL;
+END_VAR
+VAR_OUTPUT
+	eMode: E_MODE;
+	eErrorType: E_ErrorHAndling;
+END_VAR
+VAR
+	fbErrorHandling: FB_ErrorHAndling;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF IOs.xMC_HasError OR xEStop THEN  //Emergency_Stop is NC designed!
+	eMode:= Error;
+  ELSIF IOs.xSel_Auto THEN
+   eMode:= Auto;
+	ELSIF IOs.xSel_Manual THEN
+		eMode:= Manual;
+		ELSE
+			eMode:= Idle;
+END_IF
+
+
+fbErrorHandling(xEStop := xEStop);
+eErrorType:= fbErrorHandling.eErrorHandling;
+
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

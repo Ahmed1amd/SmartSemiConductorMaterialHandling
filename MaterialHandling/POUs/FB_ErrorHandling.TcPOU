@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="FB_ErrorHandling" Id="{fc95b0d0-6a29-4392-a6b9-d4bc4d625903}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ErrorHandling
+VAR_INPUT
+	xEStop: BOOL;
+END_VAR
+VAR_OUTPUT
+	eErrorHandling: E_ErrorHandling;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF xEStop THEN
+	eErrorHandling:= Emergency;
+ELSIF IOs.xMC_HasError THEN
+		eErrorHandling:= Fault;
+		ELSE
+			eErrorHandling:= No_Error;
+END_IF]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

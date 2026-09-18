@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <POU Name="MAIN" Id="{c472a534-e2f9-4d80-a2b8-b5d0e0e35147}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	fbStateMachine: FB_StateMachine;
+	eErrorType: E_ErrorHandling;
+	xEmitter_Manual: BOOL;  //Simulation
+	eMode: E_Mode;
+	////// Inputs & Outputs
+	xEStop: BOOL;
+	xPB_ManualRun_Pressed: BOOL;
+	xSel_Auto: BOOL;
+    xSel_Manual: BOOL;
+	///////////
+	xEmitter: BOOL;
+	xConv_LoadStation: BOOL;
+	xCurvedConv_CCW: BOOL;
+	xConv_BeforeEntry: BOOL;
+	xMC_Start: BOOL;
+	xMC_Stop: BOOL;
+	xMC_Reset: BOOL;
+	xMC_ProduceLids: BOOL;
+	xConv_AfterProcess: BOOL;
+	xRemover: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+xEStop:= NOT IOs.xEStop;
+xPB_ManualRun_Pressed:= IOs.xPB_ManualRun_Pressed;
+xSel_Auto:= IOs.xSel_Auto;
+xSel_Manual:= IOs.xSel_Manual;
+
+IF IOs.xSystemPower THEN
+	fbStateMachine(xEmitter_Manual:= xEmitter_Manual,xESTOP:= xESTOP, xPB_ManualRun_Pressed:= xPB_ManualRun_Pressed, xSel_Auto:= xSel_Auto, xSel_Manual:= xSel_Manual);
+    eMode := fbStateMachine.eMode;
+    eErrorType:= fbStateMachine.eErrorType;
+END_IF
+
+
+IOs.xEmitter := fbStateMachine.xEmitter;
+IOs.xConv_LoadStation := fbStateMachine.xConv_LoadStation;
+IOs.xCurvedConv_CCW := fbStateMachine.xCurvedConv_CCW;
+IOs.xConv_BeforeEntry := fbStateMachine.xConv_BeforeEntry;
+IOs.xMC_Start := fbStateMachine.xMC_Start;
+IOs.xMC_Stop := fbStateMachine.xMC_Stop;
+IOs.xMC_Reset := fbStateMachine.xMC_Reset;
+IOs.xMC_ProduceLids := fbStateMachine.xMC_ProduceLids;
+IOS.xConv_AfterProcess := fbStateMachine.xConv_AfterProcess; 
+IOs.xRemover := fbStateMachine.xRemover;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <DUT Name="E_AutoState" Id="{9d7530aa-7c81-4aa6-864f-1c524de8e456}">
+    <Declaration><![CDATA[{attribute 'to_string'}
+TYPE E_AutoState :
+(
+	Create_Product:= 10,
+	Load_Conveyor:= 20,
+	Transfer_To_MC:= 30,
+	Machine_Start:= 40,
+	Wait_Machine_Busy:= 50,
+	Wait_Machine_Complete:= 60,
+	Exit_MC:= 70,
+	MOVE_To_Unload:= 80,
+	Remove_Product:= 90,
+	Complete:= 100
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

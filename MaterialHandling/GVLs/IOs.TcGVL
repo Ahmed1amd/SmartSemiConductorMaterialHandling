@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1">
+  <GVL Name="IOs" Id="{e9d6859c-a942-4b56-bbc2-a9c6f9b09026}">
+    <Declaration><![CDATA[{attribute 'OPC.UA.DA' := '1'}
+{attribute 'OPC.UA.DA.Access' := '3'}
+VAR_GLOBAL
+////////////////////////////////
+    //Inputs...............
+////////////////////////////////
+(*1*)	 xSensor_LoadStation:        BOOL;
+(*2*)    xSensor_BeforeEntry:        BOOL;
+(*3*)    xSensor_AtExit:             BOOL;
+(*4*)    xEStop:                     BOOL;    //Stop the complete Machine
+(*5*)	 xPB_ManualRun_Pressed:      BOOL;    //PB = Push Button  
+(*6*)    xMC_Opened:                 BOOL;    //MC = Machine Center
+(*7*)    xMC_IsBusy:                 BOOL;
+(*8*)	 xMC_HasError:               BOOL;
+(*9*)    xrMC_Progress:              DINT;
+(*10*)   xSel_Auto:                  BOOL;
+(*11*)   xSel_Manual:                BOOL;
+(*12*)	 xSel_OFF:                   BOOL;
+
+(*13*)   xSystemPower:               BOOL;    // Power System ON/OFF - Input from HMI or Scene button
+(*14*)   xSystemReset:               BOOL;    // System Reset - Input from HMI or Scene button 
+/////////////////////////////////
+    //Outputs...............
+/////////////////////////////////
+(*1*)	 xEmitter:                   BOOL;
+(*2*)    xConv_LoadStation:          BOOL;    //Conv = Conveyor
+(*3*)    xCurvedConv_CCW:            BOOL;
+(*4*)    xConv_BeforeEntry:          BOOL;    //Stop the complete Machine
+(*5*)	 xMC_Start:                  BOOL;    //PB = Push Button
+(*6*)    xMC_Stop:                   BOOL;    //MC = Machine Center
+(*7*)    xMC_Reset:                  BOOL;
+(*8*)	 xMC_ProduceLids:            BOOL;    //True: Produce Lids , False: Produce Bases
+(*9*)    xConv_AfterProcess:         BOOL;
+(*10*)   xRemover:                   BOOL;
+(*11*)   xPb_ManualRun_Light:        BOOL;
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>
