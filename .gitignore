@@ -6,3 +6,4 @@ _Boot/
 **/_Libraries/
 *.bak
 *.tclrs
+/SmartSemiConductorMaterialHandling.~u

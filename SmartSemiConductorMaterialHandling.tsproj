@@ -18,7 +18,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{7A4684E9-082C-4995-81A8-D873236DABB5}" Name="MaterialHandling" PrjFilePath="MaterialHandling\MaterialHandling.plcproj" TmcFilePath="MaterialHandling\MaterialHandling.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{BC3AA335-5DAA-423D-2755-D84376CD7970}" TmcPath="MaterialHandling\MaterialHandling.tmc">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{63CB2B3A-9E59-F1AE-82CA-A0D7E9AC1E1E}" TmcPath="MaterialHandling\MaterialHandling.tmc">
 					<Name>MaterialHandling Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>

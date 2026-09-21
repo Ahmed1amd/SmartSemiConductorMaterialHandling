@@ -64,11 +64,17 @@ CASE eAutoState OF
 	   END_IF
 	   
 (*50*) Wait_Machine_Busy: 
-	 
-	    xConv_BeforeEntry:= FALSE;
+	     
+        IF NOT IOs.xMC_IsBusy THEN
+			eAutoState:= Wait_Machine_Complete;
+	    END_IF
+		IF IOs.xMC_IsBusy THEN
+			eAutoState:= Wait_Machine_Busy;
+		END_IF
+	    (*xConv_BeforeEntry:= FALSE;
 		IF (IOs.xrMC_Progress > 0) AND (IOs.xrMC_Progress < 100) THEN
 		eAutoState:= Wait_Machine_Complete;
-	    END_IF
+	    END_IF*)
 	 
 (*60*) Wait_Machine_Complete:  
 	   
