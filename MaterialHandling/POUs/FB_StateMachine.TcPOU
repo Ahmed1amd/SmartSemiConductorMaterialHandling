@@ -62,8 +62,8 @@ END_IF
 	   
 	Manual:
 	   
-	   IF xPB_ManualRun_Pressed THEN
-		   xMC_Start := xPB_ManualRun_Pressed;  //Robot in the Scene is predefined to work only when the raw material detected from the cell-Sensor; IF operator released the PB during the Transfer, it supposed to finish the current job unless he pressed Stop
+	   IF NOT IOs.xPB_ManualRun_Pressed THEN  //xPB_ManualRun_Pressed (old)  //PushButton is NC
+		   xMC_Start := NOT IOs.xPB_ManualRun_Pressed;  //Robot in the Scene is predefined to work only when the raw material detected from the cell-Sensor; IF operator released the PB during the Transfer, it supposed to finish the current job unless he pressed Stop
            //xPb_ManualRun_Light:= TRUE;    don't forget
 		   xConv_LoadStation:= TRUE;
 		   xCurvedConv_CCW:= TRUE;
@@ -71,6 +71,14 @@ END_IF
 		   xConv_AfterProcess:=TRUE;
 		   xEmitter := xEmitter_Manual;  //Operator should feed the Material manually obe by one (Later with HMI)
 		   xRemover:= TRUE;
+		   ELSE
+           xMC_Start := NOT IOs.xPB_ManualRun_Pressed;
+		   xConv_LoadStation:= FALSE;
+		   xCurvedConv_CCW:= FALSE;
+		   xConv_BeforeEntry:= FALSE;
+		   xConv_AfterProcess:=FALSE;
+		   xEmitter := xEmitter_Manual;  //Operator should feed the Material manually obe by one (Later with HMI)
+		   xRemover:= FALSE;   
 	   END_IF
 	   
 	   fbAutoState(xEnable:=xEnable_Auto, xReset:=xReset_Auto);

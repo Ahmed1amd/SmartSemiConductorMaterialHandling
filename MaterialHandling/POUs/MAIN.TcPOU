@@ -28,7 +28,7 @@ END_VAR
     <Implementation>
       <ST><![CDATA[
 xEStop:= NOT IOs.xEStop;
-xPB_ManualRun_Pressed:= IOs.xPB_ManualRun_Pressed;
+xPB_ManualRun_Pressed:= NOT IOs.xPB_ManualRun_Pressed; //
 xSel_Auto:= IOs.xSel_Auto;
 xSel_Manual:= IOs.xSel_Manual;
 
